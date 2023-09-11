@@ -1,8 +1,8 @@
 [
   {
-    "name": "0High Rise Laurel Canyon",
+    "name": "High Rise Laurel Canyon",
     "color": "white",
-    "type": "pants",
+    "type": "pant",
     "price": 225,
     "id": "123897917321240",
     "sku": "njks-3893",
@@ -10,17 +10,17 @@
   },
   {
     "name": "The Nines - Collection Genevieve",
-    "color": "test",
+    "color": "rainbow",
     "type": "necklace",
-    "price": "2",
+    "price": 269,
     "id": "123897917321241",
     "sku": "nsks-3728",
     "description": "The Nines is our everyday elevated collection that allows you to feel confident, empowered and dressed to the nines, no matter what"
   },
   {
     "name": "001Anessa Short - Vintage Moss Taupe",
-    "color": "purple",
-    "type": "pant",
+    "color": "brown",
+    "type": "short",
     "price": 180,
     "id": "123897917321242",
     "sku": "dkwl-8394",

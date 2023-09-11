@@ -6,20 +6,28 @@ import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import { Form } from "../../Interfaces/types";
-import { validateField } from '../../Utils/validation';
+import { validateField } from "../../Utils/validation";
 
-export default function ProductDetails({
-  id,
-  details
-}: {
-  id: string;
-  details: Products;
-}) {
+export default function ProductDetails({ id }: { id: string }) {
   const router = useRouter();
-  const [formData, setFormData] = useState<Products>({ ...details });
-  const [errors, setErrors] = useState<Form>({ name: "", type: "", color: "", price: "" });
+  const [formData, setFormData] = useState<Products | null>(null);
+  const [errors, setErrors] = useState<Form>({
+    name: "",
+    type: "",
+    color: "",
+    price: ""
+  });
 
   const fields: (keyof Form)[] = ["name", "color", "type", "price"];
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await fetch(`/api/products/${id}`);
+      const product = await response.json();
+      setFormData({ ...product });
+    };
+    fetchData();
+  }, []);
 
   const handleSubmit = async () => {
     const formHasError = Object.values(errors).some(
@@ -40,17 +48,16 @@ export default function ProductDetails({
         alert("There was an issue updating the product.");
       }
     }
-};
+  };
 
   const handleForm = (e: React.ChangeEvent<HTMLInputElement>) => {
     const fieldName = e.target.name as keyof Form;
     const value = e.target.value;
     const errorMessage = validateField(fieldName, value);
 
-    setFormData((prevFormData) => ({ ...prevFormData, [fieldName]: value }));
-    setErrors((prevErrors) => ({ ...prevErrors, [fieldName]: errorMessage }));
+    setFormData((prev) => ({ ...(prev as Products), [fieldName]: value }));
+    setErrors({ ...errors, [fieldName]: errorMessage });
   };
-
 
   return (
     <div className="w-full h-screen">
@@ -85,7 +92,7 @@ export default function ProductDetails({
           </Button>
         </Stack>
       ) : (
-        <p>There seems to be an issue loading the product.</p>
+        <p>loading...</p>
       )}
     </div>
   );

@@ -1,7 +1,29 @@
-import { NextResponse, NextRequest } from "next/server";
+import { NextResponse } from "next/server";
 import fs from "fs";
 import path from "path";
 import { Products } from "@/Interfaces/types";
+
+export async function GET({ params }: any) {
+  try {
+    const filePath = path.join(process.cwd(), "/product-fixtures.json");
+
+    const data = fs.readFileSync(filePath, "utf8");
+    const products = JSON.parse(data);
+    const productIndex = products.findIndex(
+      (p: Products) => p.id === params.id
+    );
+
+    if (productIndex === -1) {
+      return NextResponse.json({ message: "404", success: false });
+    }
+
+    const response = products[productIndex];
+    return NextResponse.json(response);
+  } catch (err) {
+    console.log(err);
+    return NextResponse.json({ message: "fail", success: false });
+  }
+}
 
 export async function PUT(request: Request, { params }: any) {
   try {
