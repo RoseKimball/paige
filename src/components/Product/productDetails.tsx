@@ -1,27 +1,56 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
 import { Products } from "../../Interfaces/types";
 import Stack from "@mui/material/Stack";
+import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
+import { Form } from "../../Interfaces/types";
+import { validateField } from '../../Utils/validation';
 
 export default function ProductDetails({
   id,
   details
 }: {
   id: string;
-  details: Products | null;
+  details: Products;
 }) {
-  const [formData, setFormData] = useState({ ...details });
-  // display form with prefilled values
-  // show value to update
-  // when update button is pressed, send PATCH or maybe PUT request to /api/products/:id
+  const router = useRouter();
+  const [formData, setFormData] = useState<Products>({ ...details });
+  const [errors, setErrors] = useState<Form>({ name: "", type: "", color: "", price: "" });
 
-  // notes: use useEffect... useState... axios/fetch
+  const fields: (keyof Form)[] = ["name", "color", "type", "price"];
+
+  const handleSubmit = async () => {
+    const formHasError = Object.values(errors).some(
+      (error) => error && error !== ""
+    );
+    if (!formHasError) {
+      const response = await fetch(`/api/products/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(formData)
+      });
+      const data = await response.json();
+      if (data.success) {
+        router.push(`/`);
+      } else {
+        alert("There was an issue updating the product.");
+      }
+    }
+};
+
   const handleForm = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const fieldName = e.target.name as keyof Form;
+    const value = e.target.value;
+    const errorMessage = validateField(fieldName, value);
+
+    setFormData((prevFormData) => ({ ...prevFormData, [fieldName]: value }));
+    setErrors((prevErrors) => ({ ...prevErrors, [fieldName]: errorMessage }));
   };
 
-  const fields: (keyof typeof formData)[] = ["name", "color", "type", "price"];
 
   return (
     <div className="w-full h-screen">
@@ -34,17 +63,26 @@ export default function ProductDetails({
           spacing={3}
           className="mx-auto mt-32"
         >
-          {fields.map((field) => (
-            <TextField
-              label={`${field}`}
-              name={`${field}`}
-              defaultValue={formData[field]}
-              id={`${field}-field`}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                handleForm(e)
-              }
-            />
-          ))}
+          {fields.map((field) => {
+            const hasError = errors[field].length > 0;
+            return (
+              <TextField
+                error={hasError}
+                helperText={hasError && errors[field]}
+                key={field}
+                label={`${field}`}
+                name={`${field}`}
+                defaultValue={formData[field]}
+                id={`${field}-field`}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  handleForm(e)
+                }
+              />
+            );
+          })}
+          <Button variant="contained" onClick={() => handleSubmit()}>
+            Submit
+          </Button>
         </Stack>
       ) : (
         <p>There seems to be an issue loading the product.</p>

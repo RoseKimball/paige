@@ -5,5 +5,12 @@ export interface Products {
     type: string,
     description: string,
     color: string,
-    price: number
+    price: string
 };
+
+export interface Form {
+    name: string,
+    type: string,
+    color: string,
+    price: string
+}
