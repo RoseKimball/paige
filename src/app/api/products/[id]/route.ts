@@ -7,7 +7,7 @@ export async function PUT(request: Request, { params }: any) {
   try {
     const productData = await request.json();
 
-    const filePath = path.join(process.cwd(), "/public/product-fixtures.json");
+    const filePath = path.join(process.cwd(), "/product-fixtures.json");
 
     const data = fs.readFileSync(filePath, "utf8");
     const products = JSON.parse(data);

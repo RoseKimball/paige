@@ -10,7 +10,7 @@ import {
 import { useRouter } from "next/navigation";
 import Box from "@mui/material/Box";
 import EditIcon from "@mui/icons-material/Edit";
-import Data from "../../public/product-fixtures.json";
+import Data from "../../product-fixtures.json";
 
 export default function Home() {
   const router = useRouter();

@@ -1,4 +1,4 @@
-import Data from '../../../public/product-fixtures.json';
+import Data from '../../../product-fixtures.json';
 import ProductDetails from "@/components/Product/productDetails"
 
 export default function Details({params}: {params: {id: string}}) {
