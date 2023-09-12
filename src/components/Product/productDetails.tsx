@@ -21,13 +21,15 @@ export default function ProductDetails({ id }: { id: string }) {
   const fields: (keyof Form)[] = ["name", "color", "type", "price"];
 
   useEffect(() => {
-    const fetchData = async () => {
-      const response = await fetch(`/api/products/${id}`);
-      const product = await response.json();
-      setFormData({ ...product });
-    };
-    fetchData();
-  }, []);
+    if(id.length) {
+      const fetchData = async () => {
+        const response = await fetch(`/api/products/${id}`);
+        const product = await response.json();
+        setFormData({ ...product });
+      };
+      fetchData();
+    }
+  }, [id]);
 
   const handleSubmit = async () => {
     const formHasError = Object.values(errors).some(

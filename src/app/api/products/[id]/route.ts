@@ -3,7 +3,7 @@ import fs from "fs";
 import path from "path";
 import { Products } from "@/Interfaces/types";
 
-export async function GET({ params }: any) {
+export async function GET(request: Request, { params }: any) {
   try {
     const filePath = path.join(process.cwd(), "/product-fixtures.json");
 
